@@ -387,7 +387,7 @@ export class AppSyncTransformer extends Construct {
       tableNameMap[tableKey] = dynamoDbConfig.tableName;
 
       //Expose datasource to support adding multiple resolvers
-      tableData[tableKey]['datasource'] = dataSource
+      // tableData[tableKey]['datasource'] = dataSource
 
 
       // Loop the basic resolvers

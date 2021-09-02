@@ -12,7 +12,7 @@
 .nyc_output
 .yarn-integrity
 /coverage
-/dist
+# /dist
 /lib
 /test-reports/
 appsync/*
