@@ -9,6 +9,7 @@ import {
   Schema,
   DataSourceOptions,
   LambdaDataSource,
+  DynamoDbDataSource,
 } from '@aws-cdk/aws-appsync';
 
 import {
@@ -153,6 +154,12 @@ export class AppSyncTransformer extends Construct {
   public readonly tableMap: { [name: string]: Table };
 
   /**
+   * Map of cdk table keys to Datasources
+   * e.g. { 'TaskTable': Table }
+   */
+  public readonly datasourceMap: { [name: string]: DynamoDbDataSource };
+
+  /**
    * The outputs from the SchemaTransformer
    */
   public readonly outputs: SchemaTransformerOutputs;
@@ -186,6 +193,7 @@ export class AppSyncTransformer extends Construct {
 
     this.props = props;
     this.tableMap = {};
+    this.datasourceMap = {};
     this.isSyncEnabled = props.syncEnabled ? props.syncEnabled : false;
     this.pointInTimeRecovery = props.enableDynamoPointInTimeRecovery ?? false;
 
@@ -387,7 +395,7 @@ export class AppSyncTransformer extends Construct {
       tableNameMap[tableKey] = dynamoDbConfig.tableName;
 
       //Expose datasource to support adding multiple resolvers
-      // tableData[tableKey]['datasource'] = dataSource
+      this.datasourceMap[tableKey] = dataSource;
 
 
       // Loop the basic resolvers

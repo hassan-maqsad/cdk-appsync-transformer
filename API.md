@@ -65,6 +65,7 @@ new AppSyncTransformer(scope: Construct, id: string, props: AppSyncTransformerPr
 Name | Type | Description 
 -----|------|-------------
 **appsyncAPI**🔹 | <code>[GraphqlApi](#aws-cdk-aws-appsync-graphqlapi)</code> | The cdk GraphqlApi construct.
+**datasourceMap**🔹 | <code>Map<string, [DynamoDbDataSource](#aws-cdk-aws-appsync-dynamodbdatasource)></code> | Map of cdk table keys to Datasources e.g. { 'TaskTable': Table }.
 **functionResolvers**🔹 | <code>Map<string, Array<[CdkTransformerFunctionResolver](#cdk-appsync-transformer-cdktransformerfunctionresolver)>></code> | The Lambda Function resolvers designated by the function directive https://github.com/kcwinner/cdk-appsync-transformer#functions.
 **httpResolvers**🔹 | <code>Map<string, Array<[CdkTransformerHttpResolver](#cdk-appsync-transformer-cdktransformerhttpresolver)>></code> | <span></span>
 **nestedAppsyncStack**🔹 | <code>[NestedStack](#aws-cdk-core-nestedstack)</code> | The NestedStack that contains the AppSync resources.

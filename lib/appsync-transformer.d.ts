@@ -1,4 +1,4 @@
-import { GraphqlApi, FieldLogLevel, AuthorizationConfig, DataSourceOptions, LambdaDataSource } from '@aws-cdk/aws-appsync';
+import { GraphqlApi, FieldLogLevel, AuthorizationConfig, DataSourceOptions, LambdaDataSource, DynamoDbDataSource } from '@aws-cdk/aws-appsync';
 import { Table, StreamViewType } from '@aws-cdk/aws-dynamodb';
 import { Grant, IGrantable } from '@aws-cdk/aws-iam';
 import { IFunction } from '@aws-cdk/aws-lambda';
@@ -140,6 +140,14 @@ export declare class AppSyncTransformer extends Construct {
      */
     readonly tableMap: {
         [name: string]: Table;
+    };
+    /**
+     * (experimental) Map of cdk table keys to Datasources e.g. { 'TaskTable': Table }.
+     *
+     * @experimental
+     */
+    readonly datasourceMap: {
+        [name: string]: DynamoDbDataSource;
     };
     /**
      * (experimental) The outputs from the SchemaTransformer.
