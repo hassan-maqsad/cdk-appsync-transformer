@@ -13,7 +13,7 @@
 .yarn-integrity
 /coverage
 # /dist
-/lib
+# /lib
 /test-reports/
 appsync/*
 build/Release
