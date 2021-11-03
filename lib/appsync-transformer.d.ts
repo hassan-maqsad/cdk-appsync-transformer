@@ -85,6 +85,13 @@ export interface AppSyncTransformerProps {
      */
     readonly nestedStackName?: string;
     /**
+     * (experimental) The root directory to use for finding custom resolvers.
+     *
+     * @default process.cwd()
+     * @experimental
+     */
+    readonly customVtlTransformerRootDirectory?: string;
+    /**
      * (experimental) Optional.
      *
      * Additonal custom transformers to run prior to the CDK resource generations.
@@ -244,6 +251,12 @@ export declare class AppSyncTransformer extends Construct {
      */
     addDynamoDBStream(props: DynamoDBStreamProps): string;
     /**
+     * (experimental) Allows for overriding the generated request and response mapping templates.
+     *
+     * @experimental
+     */
+    overrideResolver(props: OverrideResolverProps): void;
+    /**
      * (experimental) Adds an IAM policy statement granting access to the public fields of the AppSync API.
      *
      * Policy is based off of the @auth transformer
@@ -277,4 +290,33 @@ export interface DynamoDBStreamProps {
      * @experimental
      */
     readonly streamViewType: StreamViewType;
+}
+/**
+ * @experimental
+ */
+export interface OverrideResolverProps {
+    /**
+     * (experimental) Example: Query, Mutation, Subscription For a GSI this might be Post, Comment, etc.
+     *
+     * @experimental
+     */
+    readonly typeName: string;
+    /**
+     * (experimental) The fieldname to override e.g. listThings, createStuff.
+     *
+     * @experimental
+     */
+    readonly fieldName: string;
+    /**
+     * (experimental) The full path to the request mapping template file.
+     *
+     * @experimental
+     */
+    readonly requestMappingTemplateFile?: string;
+    /**
+     * (experimental) The full path to the resposne mapping template file.
+     *
+     * @experimental
+     */
+    readonly responseMappingTemplateFile?: string;
 }

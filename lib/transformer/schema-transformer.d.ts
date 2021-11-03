@@ -1,4 +1,4 @@
-import { ITransformer } from 'graphql-transformer-core';
+import { ITransformer, FeatureFlagProvider } from 'graphql-transformer-core';
 import { CdkTransformerTable, CdkTransformerResolver, CdkTransformerFunctionResolver, CdkTransformerHttpResolver } from './cdk-transformer';
 import { Resource } from './resource';
 export interface SchemaTransformerProps {
@@ -22,6 +22,11 @@ export interface SchemaTransformerProps {
      * @default false
      */
     readonly syncEnabled?: boolean;
+    /**
+     * The root directory to use for finding custom resolvers
+     * @default process.cwd()
+     */
+    readonly customVtlTransformerRootDirectory?: string;
 }
 /**
  * @experimental
@@ -74,6 +79,7 @@ export declare class SchemaTransformer {
     readonly schemaPath: string;
     readonly outputPath: string;
     readonly isSyncEnabled: boolean;
+    readonly customVtlTransformerRootDirectory: string;
     private readonly authTransformerConfig;
     outputs: SchemaTransformerOutputs;
     resolvers: any;
@@ -106,4 +112,15 @@ export declare class SchemaTransformer {
        * @returns {@link TransformConfig}
       */
     private loadConfigSync;
+}
+/**
+ * Grabbed from Amplify
+ * https://github.com/aws-amplify/amplify-cli/blob/eb9257eaee117d0ed53ebc23aa28ecd7b7510fa1/packages/graphql-transformer-core/src/FeatureFlags.ts
+ */
+export declare class TransformerFeatureFlagProvider implements FeatureFlagProvider {
+    getBoolean(featureName: string, options?: boolean): boolean;
+    getString(featureName: string, options?: string): string;
+    getNumber(featureName: string, options?: number): number;
+    getObject(): object;
+    protected getValue<T extends string | number | boolean>(featureName: string, defaultValue?: T): T;
 }
