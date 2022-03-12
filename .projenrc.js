@@ -1,6 +1,8 @@
-const { AwsCdkConstructLibrary, DependenciesUpgradeMechanism, NodePackageManager } = require('projen');
+const { awscdk, javascript } = require('projen');
 
-const project = new AwsCdkConstructLibrary({
+const alphaCdkPackages = ['@aws-cdk/aws-appsync-alpha'];
+
+const project = new awscdk.AwsCdkConstructLibrary({
   authorAddress: 'kcswinner@gmail.com',
   authorName: 'Ken Winner',
   name: 'cdk-appsync-transformer',
@@ -17,17 +19,32 @@ const project = new AwsCdkConstructLibrary({
     'appsync',
     'amplify',
   ],
-  mergify: false,
-  rebuildBot: false,
-  codeCov: true,
 
-  packageManager: NodePackageManager.NPM,
-  depsUpgrade: DependenciesUpgradeMechanism.dependabot({
+  // Until we merge v2 into main
+  majorVersion: 1,
+  releaseBranches: {
+    'feat/cdk-v2-upgrade': {
+      majorVersion: 2,
+      npmDistTag: 'next',
+      prerelease: 'alpha',
+      workflowName: 'release-cdk-v2',
+    },
+  },
+
+  codeCov: true,
+  githubOptions: {
+    mergify: false,
+  },
+
+  packageManager: javascript.NodePackageManager.NPM,
+
+  dependabot: true,
+  dependabotOptions: {
     ignoreProjen: true,
     ignore: [
       { dependencyName: '@aws-cdk*' },
     ],
-  }),
+  },
 
   jestOptions: {
     jestConfig: {
@@ -40,9 +57,11 @@ const project = new AwsCdkConstructLibrary({
   // Ignore our generated appsync files
   npmignore: [
     'appsync/*',
+    'customtest/*',
   ],
   gitignore: [
     'appsync/*',
+    'customtest/*',
   ],
 
   // Jsii packaging
@@ -52,17 +71,9 @@ const project = new AwsCdkConstructLibrary({
   },
 
   // Dependency information
-  cdkVersion: '1.123.0',
-  cdkDependenciesAsDeps: false,
-  cdkDependencies: [
-    '@aws-cdk/aws-appsync',
-    '@aws-cdk/aws-cognito',
-    '@aws-cdk/aws-dynamodb',
-    '@aws-cdk/aws-iam',
-    '@aws-cdk/aws-lambda',
-    '@aws-cdk/core',
-  ],
+  cdkVersion: '2.4.0',
   devDeps: [
+    ...alphaCdkPackages,
     '@types/deep-diff',
     '@types/jest',
     '@typescript-eslint/eslint-plugin',
@@ -71,6 +82,9 @@ const project = new AwsCdkConstructLibrary({
     'jest',
     'ts-jest',
     'cloudform-types@^4.2.0',
+  ],
+  peerDeps: [
+    ...alphaCdkPackages,
   ],
   bundledDeps: [
     'graphql@^14.5.8',
@@ -88,9 +102,6 @@ const project = new AwsCdkConstructLibrary({
     'graphql-versioned-transformer',
   ],
 });
-
-const unbumpTask = project.tasks.tryFind('unbump');
-unbumpTask.exec('git checkout package-lock.json');
 
 project.eslint.overrides.push({
   files: [

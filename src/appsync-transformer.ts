@@ -1,18 +1,19 @@
 import * as fs from 'fs';
+import * as path from 'path';
 import {
   GraphqlApi,
   AuthorizationType,
   FieldLogLevel,
   MappingTemplate,
-  CfnDataSource,
   Resolver,
-  CfnResolver,
   AuthorizationConfig,
   Schema,
   DataSourceOptions,
   LambdaDataSource,
-  DynamoDbDataSource,
-} from '@aws-cdk/aws-appsync';
+} from '@aws-cdk/aws-appsync-alpha';
+
+import { NestedStack, CfnOutput } from 'aws-cdk-lib';
+import { CfnDataSource, CfnResolver } from 'aws-cdk-lib/aws-appsync';
 
 import {
   CfnTable,
@@ -22,10 +23,10 @@ import {
   BillingMode,
   StreamViewType,
   TableProps,
-} from '@aws-cdk/aws-dynamodb';
-import { Effect, Grant, IGrantable, PolicyStatement } from '@aws-cdk/aws-iam';
-import { IFunction } from '@aws-cdk/aws-lambda';
-import { Construct, NestedStack, CfnOutput } from '@aws-cdk/core';
+} from 'aws-cdk-lib/aws-dynamodb';
+import { Effect, Grant, IGrantable, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { IFunction } from 'aws-cdk-lib/aws-lambda';
+import { Construct } from 'constructs';
 
 import {
   CdkTransformerResolver,
@@ -46,6 +47,12 @@ export interface AppSyncTransformerProps {
    * Relative path where schema.graphql exists
    */
   readonly schemaPath: string;
+
+  /**
+   * Path where generated resolvers are output
+   * @default "./appsync"
+   */
+  readonly outputPath?: string;
 
   /**
    * Optional. {@link AuthorizationConfig} type defining authorization for AppSync GraphqlApi. Defaults to API_KEY
@@ -189,7 +196,7 @@ export class AppSyncTransformer extends Construct {
     [name: string]: CdkTransformerHttpResolver[];
   };
 
-  private props: AppSyncTransformerProps
+  private props: AppSyncTransformerProps;
   private isSyncEnabled: boolean;
   private syncTable: Table | undefined;
   private pointInTimeRecovery: boolean;
@@ -207,6 +214,7 @@ export class AppSyncTransformer extends Construct {
 
     const transformerConfiguration: SchemaTransformerProps = {
       schemaPath: props.schemaPath,
+      outputPath: props.outputPath,
       syncEnabled: props.syncEnabled ?? false,
       customVtlTransformerRootDirectory: props.customVtlTransformerRootDirectory,
     };
@@ -275,7 +283,7 @@ export class AppSyncTransformer extends Construct {
           ? props.fieldLogLevel
           : FieldLogLevel.NONE,
       },
-      schema: Schema.fromAsset('./appsync/schema.graphql'),
+      schema: Schema.fromAsset(path.join(transformer.outputPath, 'schema.graphql')),
       xrayEnabled: props.xrayEnabled ?? false,
     });
 
@@ -388,7 +396,7 @@ export class AppSyncTransformer extends Construct {
         };
 
         // Need to add permission for our datasource service role to access the sync table
-        dataSource.grantPrincipal.addToPolicy(
+        dataSource.grantPrincipal.addToPrincipalPolicy(
           new PolicyStatement({
             effect: Effect.ALLOW,
             actions: [

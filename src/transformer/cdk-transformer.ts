@@ -1,4 +1,4 @@
-import { MappingTemplate } from '@aws-cdk/aws-appsync';
+import { MappingTemplate } from '@aws-cdk/aws-appsync-alpha';
 import { Transformer, TransformerContext, getFieldArguments } from 'graphql-transformer-core';
 
 const graphqlTypeStatements = ['Query', 'Mutation', 'Subscription'];
@@ -119,7 +119,7 @@ export class CdkTransformer extends Transformer {
       const subscriptionFields = getFieldArguments(subscription);
       ctx.setOutput('subscriptions', subscriptionFields);
     }
-  }
+  };
 
   private buildResources(ctx: TransformerContext): void {
     const templateResources = ctx.template.Resources;
