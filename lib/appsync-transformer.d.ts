@@ -1,8 +1,9 @@
-import { GraphqlApi, FieldLogLevel, AuthorizationConfig, DataSourceOptions, LambdaDataSource, DynamoDbDataSource } from '@aws-cdk/aws-appsync';
-import { Table, StreamViewType } from '@aws-cdk/aws-dynamodb';
-import { Grant, IGrantable } from '@aws-cdk/aws-iam';
-import { IFunction } from '@aws-cdk/aws-lambda';
-import { Construct, NestedStack } from '@aws-cdk/core';
+import { GraphqlApi, FieldLogLevel, AuthorizationConfig, DataSourceOptions, LambdaDataSource, DynamoDbDataSource } from '@aws-cdk/aws-appsync-alpha';
+import { NestedStack } from 'aws-cdk-lib';
+import { Table, StreamViewType } from 'aws-cdk-lib/aws-dynamodb';
+import { Grant, IGrantable } from 'aws-cdk-lib/aws-iam';
+import { IFunction } from 'aws-cdk-lib/aws-lambda';
+import { Construct } from 'constructs';
 import { CdkTransformerResolver, CdkTransformerFunctionResolver, CdkTransformerHttpResolver, SchemaTransformerOutputs } from './transformer';
 /**
  * @experimental
@@ -14,6 +15,13 @@ export interface AppSyncTransformerProps {
      * @experimental
      */
     readonly schemaPath: string;
+    /**
+     * (experimental) Path where generated resolvers are output.
+     *
+     * @default "./appsync"
+     * @experimental
+     */
+    readonly outputPath?: string;
     /**
      * (experimental) Optional.
      *

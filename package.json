@@ -1,5 +1,5 @@
 {
-  "name": "maq-cdk-appsync-transformer",
+  "name": "maq-cdk-appsync-transformer-v2",
   "repository": {
     "type": "git",
     "url": "https://github.com/kcwinner/cdk-appsync-transformer.git"
@@ -103,7 +103,7 @@
   ],
   "main": "lib/index.js",
   "license": "Apache-2.0",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "jest": {
     "testPathIgnorePatterns": [
       "<rootDir>/test/mappedTransformer"

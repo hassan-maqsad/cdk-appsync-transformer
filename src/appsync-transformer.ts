@@ -10,6 +10,7 @@ import {
   Schema,
   DataSourceOptions,
   LambdaDataSource,
+  DynamoDbDataSource,
 } from '@aws-cdk/aws-appsync-alpha';
 
 import { NestedStack, CfnOutput } from 'aws-cdk-lib';
